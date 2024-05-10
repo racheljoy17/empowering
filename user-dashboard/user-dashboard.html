@@ -1,0 +1,1284 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ENERGY DASHBOARD</title>
+    <link rel="stylesheet" href="style.css">
+    <link flex href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+    <script src="script.js" defer></script>
+    <!-- <script src="connected-devices-chart.js" defer></script> -->
+    <script src="summary-chart.js" defer></script> <!-- Include the JavaScript file -->
+    <!-- <script src="additional-container-under-nav.js" defer></script>  -->
+    <style>
+        /* Additional container styles */
+        .additional-container {
+            background-color: #fff;
+            /* Set background color to white */
+            padding: 10px;
+            border-radius: 8px;
+            flex: 1;
+            margin: 15px;
+            box-sizing: border-box;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            /* Shadow effect */
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            /* Add border for clarity */
+        }
+
+        /* Add specific styles for each container if needed */
+        #container1,
+        #container2,
+        #container3 {
+            background-color: white;
+            /* Set background color to transparent */
+        }
+
+        .container {
+            display: none;
+            flex-wrap: wrap;
+            margin-left: 280px;
+            transition: all 0.5s ease;
+            /* Add transition effect for margin-left */
+        }
+
+        .container-row {
+            display: flex;
+            flex-wrap: wrap;
+            transition: all 0.5s ease;
+            width: 100%;
+            /* Add transition effect for margin-left */
+        }
+
+        /* check if .sidebar.hoverable has class .close then set the .container-row margin-left as 50px */
+        .sidebar.hoverable.close~.container,
+        .sidebar.hoverable.close~.navigation-bar {
+            margin-left: 80px;
+        }
+
+        .sidebar.hoverable.close~#data-container {
+            margin-left: 95px;
+            width: calc(100% - 110px);
+            /* Calculate width to accommodate margins and sidebar */
+
+        }
+
+        .sidebar {
+            overflow: hidden;
+        }
+
+        .navigation-bar {
+            display: flex;
+            justify-content: left;
+            margin-top: 20px;
+            margin-left: 20px;
+            transition: all 0.5s ease;
+            /* Add transition effect for margin-left */
+        }
+
+
+        .navigation-bar button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background: #333;
+            color: #fff;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            margin: 0 10px;
+        }
+
+        .navigation-bar button:hover {
+            background: #555;
+        }
+
+        .navigation-bar button.selected {
+            /* Add a different style for the selected button, gradient (blue, green) */
+            background: linear-gradient(90deg, #00c6ff, #0072ff);
+        }
+
+        .navigation-bar button.selected:hover {
+            /* Add a different style for the selected button on hover, gradient (blue, green) */
+            background: #0072ff;
+        }
+
+        #data-container {
+            background-color: white;
+            /* Set background color to transparent */
+            border-radius: 10px;
+            margin: 20px auto;
+            /* Center the container horizontally */
+            height: 690px;
+            padding: 15px;
+            width: calc(100% - 40px);
+            /* Calculate width to accommodate margins and sidebar */
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            /* Adjusted shadow effect */
+            transition: all 0.5s ease;
+            /* Add transition effect for margin-left */
+        }
+
+        .devices-page #data-container {
+            height: auto;
+            padding: 20px 40px;
+        }
+
+        .devices-page #data-container ul {
+            list-style-type: none;
+            padding: 10px;
+            border: 1px solid #ddd;
+            margin: 10px 0;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        .devices-page #data-container ul:hover {
+            background-color: #f9f9f9;
+        }
+
+        .devices-page #data-container li {
+            display: flex;
+        }
+
+        #summary-chart,
+        #connected-devices-chart {
+            height: 200px;
+        }
+
+        /* Styles for circular profile picture */
+        .user-profile {
+            text-align: center;
+            /* Align the content in the center */
+        }
+
+        .profile-picture {
+            width: 200px;
+            /* Adjust the width of the picture */
+            height: 200px;
+            /* Set the height same as width to make it a perfect circle */
+            border-radius: 50%;
+            /* Make the image circular */
+            object-fit: cover;
+            /* Ensure the image covers the entire container */
+            margin-top: 20px;
+        }
+
+        .user-profile p {
+            font-size: 20px;
+            /* Adjust the font size of the text */
+            margin-top: 15px;
+            /* Add some space between the picture and text */
+        }
+
+        .additional-container h2 {
+            text-align: center;
+        }
+
+        .additional-container .container-rate {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: calc(100% - 30px);
+        }
+
+        #power-rate {
+            text-align: center;
+        }
+
+        .container h1 {
+            padding: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Content Container -->
+
+    <nav class="sidebar locked">
+        <div class="logo_items flex">
+            <span class="nav_image">
+                <img src="../images/e-logo-orange.png" alt="logo_img">
+            </span>
+            <span class="logo_name"><img src="../images/e-logo-word.png" alt="" style="width: 150px;"></span>
+            <i class="bx bx-lock-alt" id="lock-icon" title="Unlock Sidebar"></i>
+            <i class="bx bx-x" id="sidebar-close"></i>
+        </div>
+        <div class="menu_container">
+            <div class="menu_items">
+                <ul class="menu_item">
+                    <div class="menu_title flex">
+                        <span class="title">
+                            <MENU></MENU>
+                        </span>
+                        <span class="line"></span>
+                    </div>
+                    <li class="item">
+                        <a href="#dashboard-page" class="link flex">
+                            <i class="bx bx-grid-alt"></i>
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
+                    <li class="item" id="power">
+                        <a href="#power-rate-page" class="link flex">
+                            <i class="bx bx-bolt-circle"></i>
+                            <span>Power Rate</span>
+                        </a>
+                    </li>
+                    <li class="item" id="devices">
+                        <a href="#devices-page" class="link flex">
+                            <i class="bx bx-devices"></i>
+                            <span>Devices</span>
+                        </a>
+                    </li>
+                    <li class="item">
+                        <a href="#" class="link flex" id="logout-link">
+                            <i class="bx bx-log-out"></i>
+                            <span>Logout</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container dashboard-page">
+        <h1>Dashboard</h1>
+        <!-- Additional containers -->
+        <div class="container-row">
+            <div class="additional-container" id="container1">
+                <h2>User</h2>
+                <!-- Content for container 1 -->
+                <div class="user-profile">
+                    <img src="profile-picture.jpg" alt="User Profile Picture" class="profile-picture">
+
+                </div>
+            </div>
+
+            <div class="additional-container" id="container2">
+                <h2>Power Rate</h2>
+                <div class="container-rate">
+                    <div id="power-rate"></div>
+                </div>
+            </div>
+            <div class="additional-container" id="container3">
+                <h2>Estimated Cost</h2>
+                <!-- Content for container 3 -->
+                <div id="summary-chart"></div>
+            </div>
+        </div>
+
+        <!-- Navigation bar -->
+        <div class="navigation-bar">
+            <button id="all-button" class="selected">All</button>
+            <button id="today-button">Today</button>
+            <button id="month-button">Month</button>
+            <button id="year-button">Year</button>
+        </div>
+
+        <!-- Additional container under navigation bar -->
+        <div id="data-container">
+            <div id="main-graph"></div>
+            <div id="sub-graph"></div>
+        </div>
+    </div>
+
+    <div class="container power-rate-page">
+        <h1>Power Rate</h1>
+        <div id="data-container">
+            <div id="chartContainer" class="chart-container"></div>
+            <div id="sub-graph"></div>
+        </div>
+    </div>
+
+    <div class="container devices-page">
+        <h1>Devices</h1>
+        <div id="data-container">
+            <li class="items"></li>
+        </div>
+    </div>
+
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-app.js";
+        import { getAuth } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-auth.js";
+        import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-firestore.js";
+        import { getDatabase, ref, get, set } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-database.js";
+
+        // import axios from "https://cdnjs.cloudflare.com/ajax/libs/axios/0.24.0/axios.min.js";
+        import axios from "https://cdn.skypack.dev/axios";
+        import cheerio from "https://cdn.skypack.dev/cheerio";
+
+
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyAVmw2dqyc_W7X4P7eutweuEnl6TvGeP1Q",
+            authDomain: "empowering-4e0ef.firebaseapp.com",
+            databaseURL: "https://empowering-4e0ef-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "empowering-4e0ef",
+            storageBucket: "empowering-4e0ef.appspot.com",
+            messagingSenderId: "824989131570",
+            appId: "1:824989131570:web:be04fc5be51aaddd89ad2b"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+
+        // Get the Auth service for the default app
+        const auth = getAuth(app);
+
+
+
+        // get realtime database
+        const db = getDatabase(app);
+
+        // get firestore
+        const firestore = getFirestore(app);
+
+
+        var curUser;
+
+        // check if user is already logged in
+        auth.onAuthStateChanged((user) => {
+            if (user) {
+                const uid = user.uid;
+
+                // get the user's device MAC address using db from firestore
+                getDoc(doc(firestore, "users", user.uid))
+                    .then((doc) => {
+                        if (doc.exists()) {
+                            curUser = doc.data();
+                            curUser.uid = user.uid;
+
+                            if (curUser.isAdmin == false) {
+                                var power = document.getElementById("power");
+                                power.style.display = "none";
+                                var devices = document.getElementById("devices");
+                                devices.style.display = "none";
+                            }
+                        } else {
+                            console.log("No such document!");
+                        }
+                    }).catch((error) => {
+                        console.log("Error getting document:", error);
+                    });
+
+
+                // get the device MAC address
+            } else {
+                // get the email
+                // go to login page
+                window.location.href = "../user-login/login.html";
+            }
+        });
+
+
+        
+
+
+
+
+
+        // Function to fetch and scrape the website
+        async function getCharge(month, year) {
+            // get the data from '/charge' endpoint
+
+            const response = await axios.get(`/charge?month=${month}&year=${year}`);
+            const data = response.data;
+
+            console.log(data.rate);
+
+            return data.rate;
+        }
+
+
+
+
+
+        async function getChargeFromFirebase(month, year) {
+            let epoch = (new Date(`${month} 1, ${year}`).getTime() / 1000) - 14400;
+            let charge = null;
+            const data = ref(db, `data/rate/${epoch}`);
+
+            await get(data).then((snapshot) => {
+                if (snapshot.exists()) {
+                    charge = snapshot.val();
+                } else {
+                    console.log("No data available");
+                }
+            }).catch((error) => {
+                console.error(error);
+            });
+
+            return charge;
+        }
+
+        async function saveChargeToFirebase(month, year, est, charge) {
+            let epoch = (new Date(`${month} 1, ${year}`).getTime() / 1000) - 14400;
+            const data = ref(db, `data/rate/${epoch}`);
+
+            await set(data, { est: est, val: charge }).then(() => {
+                console.log("Data saved successfully!");
+            }).catch((error) => {
+                console.error("Error saving data: ", error);
+            });
+        }
+
+
+        async function refreshCharge() {
+            // refresh the charge from the start of 2023 up to the current month
+            let now = new Date();
+            let start = new Date('January 1, 2023');
+            let current = new Date(now.getFullYear(), now.getMonth(), 1);
+            let charge = 0;
+            let month = '';
+            let year = 0;
+
+            let total = 0;
+            let count = 0;
+            for (let date = start; date <= current; date.setMonth(date.getMonth() + 1)) {
+                month = date.toLocaleString('default', { month: 'long' }).toLowerCase();
+                year = date.getFullYear();
+                // check if the charge is already in the database
+                let c = await getChargeFromFirebase(month, year);
+                if (c == null || c.est == true) {
+                    console.log("Fetching charge for ", date.getTime(), current.getTime());
+                    if (date.getTime() === current.getTime()) {
+                        let avg = total / count;
+
+                        document.getElementById("power-rate").innerHTML = `<p style="font-size:30px">₱ ${avg.toFixed(2)} per kWh</p><i>Estimated value only</i>`;
+                        await saveChargeToFirebase(month, year, true, avg);
+                    } else {
+                        charge = await getCharge(month, year);
+                        total += charge;
+                        count++;
+                        await saveChargeToFirebase(month, year, false, charge);
+                    }
+                } else if (c != null && c.est == false) {
+                    total += c.val;
+                    count++;
+                }
+            }
+        }
+
+
+        const dataContainerDashboard = document.querySelector(".dashboard-page #data-container");
+        const mainGraphDashboard = document.querySelector(".dashboard-page #main-graph");
+        const subGraphDashboard = document.querySelector(".dashboard-page #sub-graph");
+
+
+
+        // on dataContainerDashboard change size
+        new ResizeObserver(function () {
+            if (window.chart) window.chart.windowResizeHandler();
+            // set all the items inside the dataContainerDashboard to have opacity of 0
+            dataContainerDashboard.querySelectorAll('*').forEach((item) => {
+                // item.style.opacity = 0;
+            });
+        }).observe(dataContainerDashboard);
+
+        const now = new Date();
+        const start = new Date(now.getFullYear() - 1, now.getMonth(), 1, 0, 0, 0).getTime();
+        const end = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 0, 0, 0).getTime();
+
+
+        // Set the power rate in #power-rate
+
+        var kWh = [];
+        var cost = [];
+        var rate = [];
+
+
+
+        async function changeView(view) {
+
+
+            kWh = [];
+            cost = [];
+            rate = [];
+
+            while (curUser == null) {
+                await new Promise(r => setTimeout(r, 100));
+            }
+            // change id of the data container
+            const data = ref(db, `data/monitor/${curUser.mac}`);
+
+
+            // Add content for year view
+            for (let date = new Date(start); date <= end; date.setMonth(date.getMonth() + 1)) {
+                let m = await getChargeFromFirebase(date.toLocaleString('default', { month: 'long' }).toLowerCase(), date.getFullYear());
+                rate.push([(date.getTime() + 14400), m.val]);
+            }
+
+            // create dictionary for data
+            let dict = new Map();
+
+            await get(data).then(async (snapshot) => {
+                if (snapshot.exists()) {
+                    let count = 0;
+                    snapshot.forEach((childSnapshot) => {
+                        const adjTime = (childSnapshot.key - 14400) * 1000;
+                        const adjDate = new Date(adjTime);
+                        const currentHour = new Date(adjDate.getFullYear(), adjDate.getMonth(), adjDate.getDate(), adjDate.getHours(), 0, 0).getTime();
+
+
+                        if (adjTime >= start && adjTime <= end) {
+                            if (dict.has(currentHour)) {
+                                dict.set(
+                                    currentHour,
+                                    {
+                                        A: dict.get(currentHour).A + childSnapshot.val().A,
+                                        V: dict.get(currentHour).V + childSnapshot.val().V,
+                                        count: dict.get(currentHour).count + 1
+                                    });
+                            } else {
+                                dict.set(
+                                    currentHour,
+                                    {
+                                        A: childSnapshot.val().A,
+                                        V: childSnapshot.val().V,
+                                        count: 1
+                                    });
+                            }
+                            count++;
+                        }
+                    });
+
+                    dict.forEach((value, key) => {
+                        let val = ((value.A / 1000) * (value.V / 1000)) / value.count;
+                        let rt = rate[new Date(key).getMonth()][1];
+
+                        //adjust the time to utc+8
+                        key = key + 14400 * 2 * 1000;
+                        // console.log(key, val, rt);
+                        kWh.push([key, val]);
+                        cost.push([key, val * rt]);
+                    });
+
+                    console.log(dict);
+                } else {
+                    console.log("No data available");
+                }
+            }).catch((error) => {
+                console.error(error);
+            }).finally(() => {
+                renderGraphDashboard(`Electricity Usage and Cost`);
+            });
+
+        }
+
+        function renderGraphDashboard(title) {
+            console.log(kWh, cost);
+            if (window.chart) window.chart.destroy();
+            if (window.chartSmall) window.chartSmall.destroy();
+            if (window.totalCost) window.totalCost.destroy();
+
+            window.chart = new ApexCharts(mainGraphDashboard, {
+                title: {
+                    text: title,
+                    align: 'center',
+                    margin: 30,
+                    offsetY: 10,
+                    style: {
+                        fontSize: '20px'
+                    }
+                },
+                series: [{
+                    name: 'Electricity Usage (kWh)',
+                    data: kWh
+                }, {
+                    name: 'Total Cost (₱)',
+                    data: cost
+                }],
+                chart: {
+                    id: 'chart2',
+                    type: 'area',
+                    height: 500,
+                    toolbar: {
+                        show: true
+                    },
+                    zoom: {
+                        autoScaleYaxis: true
+                    }
+                },
+                colors: ['#008FFB', '#00E396'],
+                stroke: {
+                    width: 3
+                },
+                dataLabels: {
+                    enabled: false
+                },
+                stroke: {
+                    width: [2, 2],
+                    curve: ['straight', 'straight']
+                },
+                fill: {
+                    opacity: [0, 0],
+                },
+                markers: {
+                    size: 0
+                },
+                yaxis: [
+                    {
+                        seriesName: 'Electricity Usage (kWh)',
+                        axisTicks: {
+                            show: true,
+                            color: '#008FFB'
+                        },
+                        axisBorder: {
+                            show: true,
+                            color: '#008FFB'
+                        },
+                        labels: {
+                            style: {
+                                colors: '#008FFB',
+                            },
+                            formatter: function (val) {
+                                return `${val.toFixed(2)} kWh`;
+                            }
+                        },
+                        title: {
+                            text: 'Electricity Usage (kWh)',
+                            style: {
+                                color: '#008FFB'
+                            }
+                        },
+                    },
+                    {
+                        seriesName: 'Total Cost (₱)',
+                        opposite: true,
+                        axisTicks: {
+                            show: true,
+                            color: '#00E396'
+                        },
+                        axisBorder: {
+                            show: true,
+                            color: '#00E396'
+                        },
+                        labels: {
+                            style: {
+                                colors: '#00E396'
+                            },
+                            formatter: function (val) {
+                                return `₱ ${val.toFixed(2)}`;
+                            }
+                        },
+                        title: {
+                            text: 'Total Cost (₱)',
+                            style: {
+                                color: '#00E396'
+                            }
+                        },
+                    }],
+                xaxis: {
+                    type: 'datetime'
+                }
+            });
+            window.chart.render();
+
+
+            window.chartSmall = new ApexCharts(subGraphDashboard, {
+                series: [{
+                    name: 'Electricity Usage (kWh)',
+                    data: kWh
+                }, {
+                    name: 'Total Cost (₱)',
+                    data: cost
+                }],
+                chart: {
+                    id: 'chart1',
+                    height: 130,
+                    type: 'area',
+                    brush: {
+                        target: 'chart2',
+                        enabled: true
+                    },
+                    selection: {
+                        enabled: true,
+
+                    }
+                },
+                colors: ['#008FFB', '#00E396'],
+                stroke: {
+                    width: [2, 2],
+                    curve: ['straight', 'straight']
+                },
+                fill: {
+                    type: 'gradient',
+                    gradient: {
+                        opacityFrom: 0.91,
+                        opacityTo: 0.1,
+                    }
+                },
+                xaxis: {
+                    type: 'datetime',
+                    tooltip: {
+                        enabled: false
+                    }
+                },
+                yaxis: {
+                    tickAmount: 2,
+                    labels: {
+                        show: false
+                    }
+                },
+                legend: {
+                    show: false
+                }
+            });
+            window.chartSmall.render();
+
+
+
+            // Assume totalCost holds the total cost dynamically
+            var totalCost = 0; // Example total cost
+
+            for (let i = 0; i < cost.length; i++) {
+                totalCost += cost[i][1];
+            }
+
+            window.totalCost = new ApexCharts(
+                document.querySelector("#summary-chart"),
+                {
+                    series: [totalCost], // Update with the total cost
+                    chart: {
+                        id: 'summaryChart',
+                        height: 300,
+                        type: 'radialBar',
+                        toolbar: {
+                            show: false
+                        }
+                    },
+                    plotOptions: {
+                        radialBar: {
+                            hollow: {
+                                margin: 0,
+                                size: '70%',
+                                background: '#fff',
+                                image: undefined,
+                                imageOffsetX: 0,
+                                imageOffsetY: 0,
+                                position: 'front',
+                                dropShadow: {
+                                    enabled: true,
+                                    top: 3,
+                                    left: 0,
+                                    blur: 4,
+                                    opacity: 0.24
+                                }
+                            },
+                            track: {
+                                background: '#fff',
+                                strokeWidth: '67%',
+                                margin: 0, // margin is in pixels
+                                dropShadow: {
+                                    enabled: true,
+                                    top: -3,
+                                    left: 0,
+                                    blur: 4,
+                                    opacity: 0.35
+                                }
+                            },
+
+                            dataLabels: {
+                                show: true,
+                                name: {
+                                    offsetY: -10,
+                                    show: true,
+                                    color: '#888',
+                                    fontSize: '17px'
+                                },
+                                value: {
+                                    formatter: function (val) {
+                                        return '₱' + val.toFixed(2); // Format the value as currency with peso symbol
+                                    },
+                                    color: '#111',
+                                    fontSize: '36px',
+                                    show: true,
+                                }
+                            }
+                        }
+                    },
+                    fill: {
+                        type: 'gradient',
+                        gradient: {
+                            shade: 'dark',
+                            type: 'horizontal',
+                            shadeIntensity: 0.5,
+                            gradientToColors: ['#ABE5A1'],
+                            inverseColors: true,
+                            opacityFrom: 1,
+                            opacityTo: 1,
+                            stops: [0, 100]
+                        }
+                    },
+                    stroke: {
+                        lineCap: 'round'
+                    },
+                    labels: ['Total Cost'],
+                });
+            window.totalCost.render();
+
+        }
+
+        function renderGraphPowerRate() {
+            console.log(rate);
+
+            if (window.chatPower) window.chatPower.destroy();
+            if (window.chatPowerSmall) window.chatPowerSmall.destroy();
+
+            const chartContainer = document.getElementById("chartContainer");
+            window.chatPower = new ApexCharts(
+                chartContainer,
+                {
+                    title: {
+                        text: "Power Rate",
+                        align: 'center',
+                        margin: 30,
+                        offsetY: 10,
+                        style: {
+                            fontSize: '20px'
+                        }
+                    },
+                    series: [{
+                        name: 'Power Rate (₱)',
+                        data: rate
+                    }],
+                    chart: {
+                        id: 'chart-rate',
+                        type: 'bar',
+                        height: 500,
+                        toolbar: {
+                            show: true
+                        },
+                        zoom: {
+                            autoScaleYaxis: true
+                        }
+                    }, 
+                    dataLabels: {
+                        enabled: false // <--- HERE
+                    },
+                    yaxis: 
+                        [{
+                            seriesName: 'Power Rate (₱)',
+                            opposite: true,
+                            axisTicks: {
+                                show: true,
+                                color: '#008FFB'
+                            },
+                            axisBorder: {
+                                show: true,
+                                color: '#008FFB'
+                            },
+                            labels: {
+                                style: {
+                                    colors: '#008FFB'
+                                },
+                                formatter: function (val) {
+                                    return `₱ ${val.toFixed(2)}`;
+                                }
+                            },
+                            title: {
+                                text: 'Power Rate (₱)',
+                                style: {
+                                    color: '#008FFB'
+                                }
+                            },
+                        }],
+                    xaxis: {
+                        tickAmount: 'dataPoints',
+                        type: 'datetime',
+                        labels: {
+                            format: "MMM 'yy"
+                        }
+                    }
+                });
+            window.chatPower.render();
+
+            
+            window.chatPowerSmall = new ApexCharts(document.querySelector(".power-rate-page #sub-graph"), {
+                series: [ {
+                    name: 'Power Rate (₱)',
+                    data: rate
+                }],
+                chart: {
+                    id: 'chart-rate-small',
+                    height: 130,
+                    type: 'area',
+                    brush: {
+                        target: 'chart-rate',
+                        enabled: true
+                    },
+                    selection: {
+                        enabled: true,
+
+                    }
+                },
+                colors: ['#008FFB'],
+                stroke: {
+                    width: [2],
+                    curve: ['straight']
+                },
+                fill: {
+                    type: 'gradient',
+                    gradient: {
+                        opacityFrom: 0.91,
+                        opacityTo: 0.1,
+                    }
+                },
+                xaxis: {
+                    type: 'datetime',
+                    labels: {
+                        format: "MMM 'yy"
+                    },
+                    tooltip: {
+                        enabled: false
+                    }
+                },
+                yaxis: {
+                    tickAmount: 2,
+                    labels: {
+                        show: false
+                    }
+                },
+                legend: {
+                    show: false,
+                }
+            });
+            window.chatPowerSmall.render();
+
+        }
+
+
+        const dashboardPage = document.querySelector(".container.dashboard-page");
+        const powerRatePage = document.querySelector(".container.power-rate-page");
+        const devicesPage = document.querySelector(".container.devices-page");
+        // Get the logout link element
+        const logoutLink = document.getElementById("logout-link");
+
+        async function hashChange() {
+            // loop until the user is already logged in
+            while (curUser == null) {
+                await new Promise(r => setTimeout(r, 100));
+            }
+
+            // Check if the current URL contains the target hash
+            if (window.location.hash === '#dashboard-page') {
+                dashboardPage.style.display = "flex";
+                powerRatePage.style.display = "none";
+                devicesPage.style.display = "none";
+                console.log("Dashboard page");
+
+                await refreshCharge();
+                await changeView('today');
+            } else if (window.location.hash === '#power-rate-page' && curUser.isAdmin == true) {
+                dashboardPage.style.display = "none";
+                devicesPage.style.display = "none";
+                powerRatePage.style.display = "flex";
+                console.log("Power rate page");
+
+
+                await refreshCharge();
+                await changeView('today');
+                await renderGraphPowerRate();
+                
+            } else if (window.location.hash === '#devices-page' && curUser.isAdmin == true) {
+                dashboardPage.style.display = "none";
+                powerRatePage.style.display = "none";
+                devicesPage.style.display = "flex";
+                console.log("Devices page");
+
+
+                const listItems = document.querySelector(".devices-page .items");
+                listItems.innerHTML = "";
+                // get the devices from the database, keys only
+                await get(ref(db, `data/monitor`)).then((snapshot) => {
+                    if (snapshot.exists()) {
+                        listItems.innerHTML = "";
+                        snapshot.forEach((childSnapshot) => {
+                            const key = childSnapshot.key;                           
+                            listItems.innerHTML += `<ul>${key}</ul>`;
+                        });
+                    } else {
+                        console.log("No data available");
+                    }
+                }).catch((error) => {
+                    console.error(error);
+                });
+
+            } 
+        }
+        
+      
+
+
+
+        window.addEventListener('hashchange',
+            async function (id, oldVal, newVal) {
+                await hashChange();
+            }
+        );
+
+
+        // Add click event listener to the logout link
+        logoutLink.addEventListener("click", function (event) {
+            event.preventDefault(); // Prevent default link behavior
+
+            // Sign out the current user
+            auth.signOut().then(() => {
+                // Sign-out successful.
+                alert("Logout successful!");
+                // Redirect to login page or any other page after logout
+                window.location.href = "../index.html";
+            }).catch((error) => {
+                // An error happened.
+                alert("Error occurred during logout: " + error.message);
+            });
+        });
+
+       
+
+
+
+        const allButtonDashboard = document.querySelector(".dashboard-page #all-button");
+        const todayButtonDashboard = document.querySelector(".dashboard-page #today-button");
+        const monthButtonDashboard = document.querySelector(".dashboard-page #month-button");
+        const yearButtonDashboard = document.querySelector(".dashboard-page #year-button");
+
+        allButtonDashboard.addEventListener("click", function () {
+            allButtonDashboard.classList.add("selected");
+
+            todayButtonDashboard.classList.remove("selected");
+            monthButtonDashboard.classList.remove("selected");
+            yearButtonDashboard.classList.remove("selected");
+
+            var maxi = start;
+            var mini = end;
+
+            for (let i = 0; i < cost.length; i++) {
+                if (cost[i][0] > maxi) {
+                    maxi = cost[i][0];
+                }
+
+                if (cost[i][0] < mini) {
+                    mini = cost[i][0];
+                }
+            }
+
+            // zoom to all, the maximum and minimum data
+            ApexCharts.exec(
+                'chart2',
+                'updateOptions', {
+                xaxis: {
+                    min: mini,
+                    max: maxi
+                },
+                title: {
+                    text: 'Electricity Usage and Cost'
+                }
+            });
+
+
+            ApexCharts.exec('chart1', 'updateOptions', {
+                xaxis: {
+                    min: mini,
+                    max: maxi
+                },
+                chart: {
+                    selection: {
+                        xaxis: {
+                            min: undefined,
+                            max: undefined
+                        }
+                    }
+                }
+            });
+
+            let totalCost = 0;
+
+            for (let i = 0; i < cost.length; i++) {
+                totalCost += cost[i][1];
+            }
+
+            ApexCharts.exec('summaryChart', 'updateOptions', {
+                series: [totalCost],
+                labels: ['Lifetime Cost']
+            });
+
+        });
+
+        todayButtonDashboard.addEventListener("click", function () {
+            todayButtonDashboard.classList.add("selected");
+
+            monthButtonDashboard.classList.remove("selected");
+            yearButtonDashboard.classList.remove("selected");
+            allButtonDashboard.classList.remove("selected");
+
+            const dayNow = new Date();
+            // zoom to date today
+
+            const min = new Date(dayNow.getFullYear(), dayNow.getMonth(), dayNow.getDate(), 0, 0, 0).getTime();
+            const max = new Date(dayNow.getFullYear(), dayNow.getMonth(), dayNow.getDate() + 1, 0, 0, 0).getTime();
+
+            console.log(window.chart == null);
+            ApexCharts.exec(
+                'chart2',
+                'updateOptions', {
+                xaxis: {
+                    min: min,
+                    max: max
+                },
+                title: {
+                    text: `Electricity Usage and Cost for ${dayNow.toLocaleDateString('default', { month: 'long', day: 'numeric', year: 'numeric' })}`
+                }
+            });
+
+            ApexCharts.exec('chart1', 'updateOptions', {
+                xaxis: {
+                    min: min,
+                    max: max
+                },
+                chart: {
+                    selection: {
+                        xaxis: {
+                            min: undefined,
+                            max: undefined
+                        }
+                    }
+                }
+            });
+
+            let totalCost = 0;
+
+            for (let i = 0; i < cost.length; i++) {
+                if (cost[i][0] >= min && cost[i][0] <= max) {
+                    totalCost += cost[i][1];
+                }
+            }
+
+            ApexCharts.exec('summaryChart', 'updateOptions', {
+                series: [totalCost],
+                labels: ['Today\'s Cost']
+            });
+
+        });
+
+        monthButtonDashboard.addEventListener("click", function () {
+            monthButtonDashboard.classList.add("selected");
+
+            todayButtonDashboard.classList.remove("selected");
+            yearButtonDashboard.classList.remove("selected");
+            allButtonDashboard.classList.remove("selected");
+
+            // zoom to this month
+            const dayNow = new Date();
+
+            const min = new Date(dayNow.getFullYear(), dayNow.getMonth(), 1, 0, 0, 0).getTime();
+            const max = new Date(dayNow.getFullYear(), dayNow.getMonth() + 1, 1, 0, 0, 0).getTime();
+
+            ApexCharts.exec(
+                'chart2',
+                'updateOptions', {
+                xaxis: {
+                    min: min,
+                    max: max
+                },
+                title: {
+                    text: `Electricity Usage and Cost for ${dayNow.toLocaleDateString('default', { month: 'long', year: 'numeric' })}`
+                }
+            });
+
+            ApexCharts.exec('chart1', 'updateOptions', {
+                xaxis: {
+                    min: min,
+                    max: max
+                },
+                chart: {
+                    selection: {
+                        xaxis: {
+                            min: undefined,
+                            max: undefined
+                        }
+                    }
+                }
+            });
+
+            let totalCost = 0;
+
+            for (let i = 0; i < cost.length; i++) {
+                if (cost[i][0] >= min && cost[i][0] <= max) {
+                    totalCost += cost[i][1];
+                }
+            }
+
+            ApexCharts.exec('summaryChart', 'updateOptions', {
+                series: [totalCost],
+                labels: ['This Month\'s Cost']
+            });
+
+        });
+
+        yearButtonDashboard.addEventListener("click", function () {
+            yearButtonDashboard.classList.add("selected");
+
+            todayButtonDashboard.classList.remove("selected");
+            monthButtonDashboard.classList.remove("selected");
+            allButtonDashboard.classList.remove("selected");
+
+            // zoom to this year
+            const dayNow = new Date();
+
+            const min = new Date(dayNow.getFullYear(), 0, 1, 0, 0, 0).getTime();
+            const max = new Date(dayNow.getFullYear() + 1, 0, 1, 0, 0, 0).getTime();
+
+            ApexCharts.exec(
+                'chart2',
+                'updateOptions', {
+                xaxis: {
+                    min: min,
+                    max: max
+                },
+                title: {
+                    text: `Electricity Usage and Cost for ${dayNow.getFullYear()}`
+                }
+            });
+
+            ApexCharts.exec('chart1', 'updateOptions', {
+                xaxis: {
+                    min: min,
+                    max: max
+                },
+                chart: {
+                    selection: {
+                        xaxis: {
+                            min: undefined,
+                            max: undefined
+                        }
+                    }
+                }
+            });
+
+            let totalCost = 0;
+
+            for (let i = 0; i < cost.length; i++) {
+                if (cost[i][0] >= min && cost[i][0] <= max) {
+                    totalCost += cost[i][1];
+                }
+            }
+
+            ApexCharts.exec('summaryChart', 'updateOptions', {
+                series: [totalCost],
+                labels: ['This Year\'s Cost']
+            });
+
+        });
+
+
+    
+        await hashChange();
+    </script>
+</body>
+
+</html>

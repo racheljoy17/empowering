@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ENERGY DASHBOARD</title>
+    <link rel="stylesheet" href="style.css">
+    <link flex href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+    <script src="script.js" defer></script>
+    <script src="connected-devices-chart.js" defer></script> <!-- Include the JavaScript file -->
+    <script src="summary-chart.js" defer></script> <!-- Include the JavaScript file -->
+    <script src="additional-container-under-nav.js" defer></script> <!-- Include the JavaScript file -->
+    <script src="additional-container-today.js" defer></script> <!-- Include the JavaScript file -->
+    <script src="additional-container-month.js" defer></script> <!-- Include the JavaScript file -->
+    <script src="additional-container-year.js" defer></script> <!-- Include the JavaScript file -->
+    <style>
+        /* Additional container styles */
+        .additional-container {
+            background-color: #fff;
+            /* Set background color to white */
+            padding: 10px;
+            border-radius: 8px;
+            flex: 1;
+            margin: 15px;
+            margin-top: 40px;
+            box-sizing: border-box;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            /* Shadow effect */
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            /* Add border for clarity */
+        }
+
+        /* Add specific styles for each container if needed */
+        #container1,
+        #container2,
+        #container3 {
+            background-color: white;
+            /* Set background color to transparent */
+        }
+
+        .container-row {
+            display: flex;
+            flex-wrap: wrap;
+            margin-left: 280px;
+        }
+
+        .navigation-bar {
+            display: flex;
+            justify-content: left;
+            margin-top: 20px;
+            margin-left: 280px;
+        }
+
+        .navigation-bar button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #333;
+            color: #fff;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin: 0 10px;
+        }
+
+        .navigation-bar button:hover {
+            background-color: #555;
+        }
+
+        #additional-container-year {
+            background-color: white;
+            /* Set background color to transparent */
+            border-radius: 10px;
+            margin: 20px auto;
+            /* Center the container horizontally */
+            margin-left: 290px;
+            /* Adjust for the width of the sidebar */
+            height: 800px;
+            max-width: calc(100% - 300px);
+            /* Set a maximum width for the container, considering the sidebar */
+            width: calc(100% - 300px);
+            /* Calculate width to accommodate margins and sidebar */
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            /* Adjusted shadow effect */
+        }
+
+        #summary-chart,
+        #connected-devices-chart {
+            height: 200px;
+        }
+
+        /* Styles for circular profile picture */
+        .user-profile {
+            text-align: center;
+            /* Align the content in the center */
+        }
+
+        .profile-picture {
+            width: 200px;
+            /* Adjust the width of the picture */
+            height: 200px;
+            /* Set the height same as width to make it a perfect circle */
+            border-radius: 50%;
+            /* Make the image circular */
+            object-fit: cover;
+            /* Ensure the image covers the entire container */
+            margin-top: 20px;
+        }
+
+        .user-profile p {
+            font-size: 20px;
+            /* Adjust the font size of the text */
+            margin-top: 15px;
+            /* Add some space between the picture and text */
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="sidebar locked">
+        <div class="logo_items flex">
+            <span class="nav_image">
+                <img src="images/logo.png" alt="logo_img">
+            </span>
+            <span class="logo_name">EMPOWERING HOMES</span>
+            <i class="bx bx-lock-alt" id="lock-icon" title="Unlock Sidebar"></i>
+            <i class="bx bx-x" id="sidebar-close"></i>
+        </div>
+
+        <div class="menu_container">
+            <div class="menu_items">
+                <ul class="menu_item">
+                    <div class="menu_title flex">
+                        <span class="title">
+                            <MENU></MENU>
+                        </span>
+                        <span class="line"></span>
+                    </div>
+                    <li class="item">
+                        <a href="today.html" class="link flex">
+                            <i class="bx bx-grid-alt"></i>
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
+                    </li>
+                    <li class="item">
+                        <a href="Appliances.html" class="link flex">
+                            <i class="bx bx-grid-alt"></i>
+                            <span>Appliances</span>
+                        </a>
+                    </li>
+                    <li class="item">
+                        <a href="butt.html" class="link flex">
+                            <i class="bx bx-grid-alt"></i>
+                            <span>Bluetooth</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Additional containers -->
+    <div class="container-row">
+        <div class="additional-container" id="container1">
+            <h2>User</h2>
+            <!-- Content for container 1 -->
+            <div class="user-profile">
+                <img src="profile-picture.jpg" alt="User Profile Picture" class="profile-picture">
+                <p></p>
+            </div>
+        </div>
+
+        <div class="additional-container" id="container2">
+            <h2>Connected Devices</h2>
+            <!-- Content for container 2 -->
+            <div id="connected-devices-chart"></div>
+        </div>
+
+        <div class="additional-container" id="container3">
+            <h2>Estimated Cost</h2>
+            <!-- Content for container 3 -->
+            <div id="summary-chart"></div>
+        </div>
+    </div>
+
+    <!-- Navigation bar -->
+    <div class="navigation-bar">
+        <a href="today.html"><button id="today-button">Today</button></a>
+        <a href="month.html"><button id="month-button">Month</button></a>
+        <a href="year.html"><button id="year-button">Year</button></a>
+    </div>
+
+    <!-- Additional container under navigation bar -->
+    <div id="additional-container-year">
+        <!-- Content for additional container under navigation bar -->
+    </div>
+
+</body>
+
+</html>

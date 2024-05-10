@@ -1,0 +1,18 @@
+{
+    "name": "EMPOWERING HOMES",
+    "short_name": "EHOMES",
+    "theme_color": "#fbb622",
+    "background_color": "#fa99ca",
+    "display": "standalone",
+    "id": "/empoweringhomes/",
+    "start_url": "/empoweringhomes/",
+    "description": "Power your Energy Efficiency Journey",
+    "orientation": "portrait",
+    "icons": [
+      {
+        "src": "images/e-logo-vertical.png",
+        "sizes": "500x500",
+        "type": "image/png"
+      }
+    ]
+  }

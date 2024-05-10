@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- Add Font Awesome CDN for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+        integrity="sha512-fmPv08t9auC4Llm1LFOkAq7z4Y0IdP98h66sy2B4OG+eW+X8z5HTt3p8zY+mgk6r6Uc3lWYSrtBX4ptTG9DCQ=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!-- Font Awesome icons (free version)-->
+    <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
+    <!-- Google fonts-->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@400;100;300;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Empowering Homes</title>
+    <link rel="icon" href="images/e-logo-orange.png" type="image/x-icon">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: beige;
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            background-position: center;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: #fbb622;
+            border-radius: 10px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+        }
+
+        .logo {
+            flex: 1;
+            text-align: center;
+        }
+
+        .logo img {
+            max-width: 250px;
+        }
+
+        .form-box {
+            flex: 1;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            overflow: auto;
+            background-color: white;
+            padding: 8px;
+            height: 500px;
+            width: 500px;
+        }
+
+        .register-container {
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .top {
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        header {
+            font-size: 30px;
+            font-weight: 700;
+            color: orange;
+        }
+
+        .input-box {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .input-field {
+            font-family: 'Poppins', sans-serif;
+            font-size: 16px;
+            height: 40px;
+            width: 100%;
+            padding: 10px;
+            padding-left: 10px;
+            border: 2px solid #f3f3f3;
+            border-radius: 5px;
+            border-color: #ccc;
+            box-sizing: border-box;
+            transition: border-color 0.3s ease-in-out;
+            color: black;
+        }
+
+        .input-box i {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            left: 15px;
+            color: orange;
+            font-size: 18px;
+        }
+
+        .submit {
+            font-size: 18px;
+            font-weight: 500;
+            height: 45px;
+            width: 100%;
+            margin-top: 10px;
+            background-color: orange;
+            color: #fff;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease-in-out;
+        }
+
+        .submit:hover {
+            background-color: #ff9900;
+        }
+
+        .toggle-password {
+            position: absolute;
+            top: 50%;
+            right: 10px;
+            transform: translateY(-50%);
+            cursor: pointer;
+        }
+
+        .error {
+            text-align: center;
+            font-size: 13px;
+            color: red;
+            margin-top: 5px;
+        }
+
+        a {
+            text-decoration: none;
+            color: orange;
+        }
+
+        @media only screen and (max-width: 600px) {
+            .container {
+                flex-direction: column;
+            }
+
+            .logo {
+                margin-bottom: 20px;
+            }
+
+            .form-box {
+                width: 90%;
+                max-width: 400px;
+            }
+
+            header {
+                font-size: 30px;
+            }
+
+            .input-field {
+                font-size: 16px;
+            }
+
+            .submit {
+                font-size: 16px;
+            }
+        }
+
+        .bottom {
+            text-align: center;
+        }
+
+        .bottom-home {
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="logo">
+            <img src="../images/e-logo-vertical.png" alt="Your Logo">
+        </div>
+        <div class="form-box">
+            <form id="loginForm">
+                <div class="register-container" id="register">
+                    <div class="top">
+                        <header>Login</header>
+                    </div>
+                    <div class="input-box">
+                        <input type="text" name="email" class="input-field" placeholder="Email" id="email"
+                            oninput="validateEmail(this)">
+                        <div class="error" id="emailError"></div>
+                    </div>
+
+                    <div class="input-box">
+                        <input type="password" class="input-field" name="password" id="password" placeholder="Password"
+                            oninput="validatePassword(this)">
+
+                        <div class="error" id="passwordError"></div>
+                    </div>
+                    <div class="two-col">
+                        <div class="two">
+                            <label><a href="forgot.html">Forgot password?</a></label>
+                        </div>
+                    </div>
+
+                    <div class="input-box">
+                        <button class="submit" id="submit" onclick="submitForm(event)">Log In</button>
+                        <!--<input type="submit" class="submit" value="Log In" onclick="submitForm(event)">-->
+                    </div>
+
+                    <div class="register-container" id="register">
+                        <div class="bottom">
+                            <span>Don't have an account? <a href="#" onclick="register()">Sign up</a></span>
+
+                        </div>
+                        <div class="bottom-home">
+                            <a href="../index.html">Home</a>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function togglePasswordVisibility() {
+            var passwordField = document.getElementById("passwordField");
+            var togglePasswordBtn = document.querySelector(".toggle-password");
+
+            if (passwordField.type === "password") {
+                passwordField.type = "text";
+                togglePasswordBtn.classList.remove("fa-eye-slash");
+                togglePasswordBtn.classList.add("fa-eye");
+            } else {
+                passwordField.type = "password";
+                togglePasswordBtn.classList.remove("fa-eye");
+                togglePasswordBtn.classList.add("fa-eye-slash");
+            }
+        }
+
+        // register validation
+        function validateEmail(input) {
+            var regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            var errorElement = document.getElementById("emailError");
+            if (input.value.trim() === "") {
+                errorElement.innerHTML = "Email is required";
+            } else if (!regex.test(input.value)) {
+                errorElement.innerHTML = "Invalid email format";
+            } else {
+                errorElement.innerHTML = "";
+            }
+        }
+
+        function validatePassword(input) {
+            var regex = /^(?=.*[!@#$%^&*])(?=.*[a-zA-Z])(?=.*[0-9]).{8,}$/;
+            var passwordError = document.getElementById("passwordError");
+            var inputValue = input.value.trim();
+
+            if (inputValue === "") {
+                passwordError.innerHTML = "Password is required";
+            } else {
+                var isPasswordValid = regex.test(inputValue);
+
+                if (!isPasswordValid) {
+                    passwordError.innerHTML = "Enter at least 8 characters, number, and special characters";
+                } else {
+                    passwordError.innerHTML = "";
+                }
+            }
+        }
+
+        // function submitForm(event) {
+        //     event.preventDefault(); // Prevent form submission by default
+
+        //     // Perform validation
+        //     var emailInput = document.getElementById("email");
+        //     var passwordInput = document.getElementById("passwordField");
+
+        //     // Validate email
+        //     validateEmail(emailInput);
+
+        //     // Validate password
+        //     validatePassword(passwordInput);
+
+        //     // Check if there are any validation errors
+        //     var emailError = document.getElementById("emailError").innerHTML;
+        //     var passwordError = document.getElementById("passwordError").innerHTML;
+
+        //     if (emailError || passwordError) {
+        //         // If there are errors, do not submit the form
+        //         return false;
+        //     } else {
+        //         // If no errors, submit the form
+        //         document.forms[0].submit();
+        //     }
+        // }
+
+        function register() {
+            window.location.href = '../user-signup/register.html';
+        }
+    </script>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
+        import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
+
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyAVmw2dqyc_W7X4P7eutweuEnl6TvGeP1Q",
+            authDomain: "empowering-4e0ef.firebaseapp.com",
+            databaseURL: "https://empowering-4e0ef-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "empowering-4e0ef",
+            storageBucket: "empowering-4e0ef.appspot.com",
+            messagingSenderId: "824989131570",
+            appId: "1:824989131570:web:be04fc5be51aaddd89ad2b"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        // Get the Auth service for the default app
+        const auth = getAuth();
+
+        // check if user is already logged in
+        auth.onAuthStateChanged((user) => {
+            if (user) {
+                // User is signed in
+                window.location.href = '../user-dashboard/user-dashboard.html#dashboard-page';
+            } else {
+                // User is signed out
+            }
+        });
+
+        async function submitForm(event) {
+            // create a loading spinner
+            var spinner = document.createElement("i");
+            spinner.classList.add("fas", "fa-spinner", "fa-spin");
+            spinner.style.marginRight = "10px";
+            document.getElementById("submit").innerHTML = "";
+            document.getElementById("submit").appendChild(spinner);
+
+
+            event.preventDefault(); // Prevent form submission by default
+
+            // Perform validation
+            var emailInput = document.getElementById("email");
+            var passwordInput = document.getElementById("password");
+
+            // Validate email
+            validateEmail(emailInput);
+
+            // Validate password
+            validatePassword(passwordInput);
+
+            // Check if there are any validation errors
+            var emailError = document.getElementById("emailError").innerHTML;
+            var passwordError = document.getElementById("passwordError").innerHTML;
+
+            if (emailError || passwordError) {
+                // If there are errors, do not submit the form
+                document.getElementById("submit").innerHTML = "Log In";
+                return false;
+            } else {
+                // If no errors, submit the form
+                try {
+                    const email = emailInput.value; // Retrieve email value
+                    const password = passwordInput.value; // Retrieve password value
+                    const userCredential = await signInWithEmailAndPassword(auth, email, password);
+                    // Signed in
+                    const user = userCredential.user;
+
+                    spinner.remove();
+                    document.getElementById("submit").innerHTML = "Log In";
+
+                    alert("Login successful!");
+                    // Redirect to another page after successful login
+                    window.location.href = '../user-dashboard/user-dashboard.html#dashboard-page';
+                } catch (error) {
+                    const errorCode = error.code;
+                    const errorMessage = error.message;
+                    alert("Invalid Email and Password");
+                }
+            }
+
+        }
+
+
+
+
+
+        document.getElementById("loginForm").addEventListener("submit", submitForm);
+
+    </script>
+</body>
+
+</html>

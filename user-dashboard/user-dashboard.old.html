@@ -1,0 +1,818 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ENERGY DASHBOARD</title>
+    <link rel="stylesheet" href="style.css">
+    <link flex href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+    <script src="script.js" defer></script>
+    <!-- <script src="connected-devices-chart.js" defer></script> -->
+    <script src="summary-chart.js" defer></script> <!-- Include the JavaScript file -->
+    <!-- <script src="additional-container-under-nav.js" defer></script>  -->
+    <style>
+        /* Additional container styles */
+        .additional-container {
+            background-color: #fff; /* Set background color to white */
+            padding: 10px;
+            border-radius: 8px;
+            flex: 1;
+            margin: 15px;
+            margin-top: 40px;
+            margin-top: 40px;
+            box-sizing: border-box;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Shadow effect */
+            border: 1px solid rgba(0, 0, 0, 0.1); /* Add border for clarity */
+        }
+
+        /* Add specific styles for each container if needed */
+        #container1,
+        #container2,
+        #container3 {
+            background-color: white; /* Set background color to transparent */
+        }
+
+        .container-row {
+            display: flex;
+            flex-wrap: wrap;
+            margin-left: 280px;
+            transition: all 0.5s ease; /* Add transition effect for margin-left */ 
+        }
+
+        /* check if .sidebar.hoverable has class .close then set the .container-row margin-left as 50px */
+        .sidebar.hoverable.close ~ .container-row,
+        .sidebar.hoverable.close ~ .navigation-bar
+        {
+            margin-left: 80px;
+        }
+
+        .sidebar.hoverable.close ~ #data-container
+        {
+            margin-left: 95px;           
+            width: calc(100% - 110px); /* Calculate width to accommodate margins and sidebar */
+
+        }
+
+        .sidebar {
+            overflow: hidden;
+        }
+
+        .navigation-bar {
+            display: flex;
+            justify-content: left;
+            margin-top: 20px;
+            margin-left: 280px;
+            transition: all 0.5s ease; /* Add transition effect for margin-left */ 
+        }
+        
+
+        .navigation-bar button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background: #333;
+            color: #fff;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            margin: 0 10px;
+        }
+
+        .navigation-bar button:hover {
+            background: #555;
+        }
+
+        .navigation-bar button.selected  {
+            /* Add a different style for the selected button, gradient (blue, green) */
+            background: linear-gradient(90deg, #00c6ff, #0072ff);
+        }
+
+        .navigation-bar button.selected:hover {
+            /* Add a different style for the selected button on hover, gradient (blue, green) */
+            background: #0072ff;
+        }
+
+        #data-container {
+            background-color: white; /* Set background color to transparent */
+            border-radius: 10px;
+            margin: 20px auto; /* Center the container horizontally */
+            margin-left: 290px; /* Adjust for the width of the sidebar */
+            height: 800px;
+            width: calc(100% - 305px); /* Calculate width to accommodate margins and sidebar */
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Adjusted shadow effect */
+            transition: all 0.5s ease; /* Add transition effect for margin-left */ 
+        }
+
+        #summary-chart,
+        #connected-devices-chart {
+            height: 200px;
+        }
+
+        /* Styles for circular profile picture */
+        .user-profile {
+            text-align: center;
+            /* Align the content in the center */
+        }
+
+        .profile-picture {
+            width: 200px;
+            /* Adjust the width of the picture */
+            height: 200px;
+            /* Set the height same as width to make it a perfect circle */
+            border-radius: 50%;
+            /* Make the image circular */
+            object-fit: cover;
+            /* Ensure the image covers the entire container */
+            margin-top: 20px;
+        }
+
+        .user-profile p {
+            font-size: 20px;
+            /* Adjust the font size of the text */
+            margin-top: 15px;
+            /* Add some space between the picture and text */
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Content Container -->
+        
+    <nav class="sidebar locked">
+        <div class="logo_items flex">
+            <span class="nav_image">
+                <img src="../images/e-logo-orange.png" alt="logo_img">
+            </span>
+            <span class="logo_name"><img src="../images/e-logo-word.png" alt="" style="width: 150px;"></span>
+            <i class="bx bx-lock-alt" id="lock-icon" title="Unlock Sidebar"></i>
+            <i class="bx bx-x" id="sidebar-close"></i>
+        </div>
+            <div class="menu_container">
+              <div class="menu_items">
+                <ul class="menu_item">
+                  <div class="menu_title flex">
+                    <span class="title">
+                      <MENU></MENU>
+                    </span>
+                    <span class="line"></span>
+                  </div>
+                  <li class="item">
+                    <a href="user-dashboard.html" class="link flex">
+                        <i class="bx bx-grid-alt"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li class="item">
+                    <a href="user-power-rate.html" class="link flex">
+                        <i class="bx bx-bolt-circle"></i>
+                        <span>Power Rate</span>
+                    </a>
+                </li>
+                <li class="item">
+                    <a href="user-devices.php" class="link flex">
+                        <i class="bx bx-devices"></i>
+                        <span>Devices</span>
+                    </a>
+                </li>
+                <li class="item">
+                    <a href="#" class="link flex" id="logout-link">
+                        <i class="bx bx-log-out"></i>
+                        <span>Logout</span>
+                    </a>
+                </li>
+                </ul>
+              </div>
+            </div>
+          </nav>
+
+    <!-- Additional containers -->
+    <div class="container-row">
+        <div class="additional-container" id="container1">
+            <h2>User</h2>
+            <!-- Content for container 1 -->
+            <div class="user-profile">
+                <img src="profile-picture.jpg" alt="User Profile Picture" class="profile-picture">
+               
+            </div>
+        </div>
+
+        <!-- <div class="additional-container" id="container2">
+            <h2>Connected Devices</h2>
+            <div id="connected-devices-chart"></div>
+        </div> -->
+        <div class="additional-container" id="container3">
+            <h2>Estimated Cost</h2>
+            <!-- Content for container 3 -->
+            <div id="summary-chart"></div>
+        </div>
+    </div>
+
+    <!-- Navigation bar -->
+    <div class="navigation-bar">
+        <button id="today-button" class="selected">Today</button>
+        <button id="month-button">Month</button>
+        <button id="year-button">Year</button>
+    </div>
+
+    <!-- Additional container under navigation bar -->
+    <div id="data-container">
+        <!-- Content for additional container under navigation bar -->
+    </div>
+
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-app.js";
+        import { getAuth } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-auth.js";
+        import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-database.js";
+        // import axios from "https://cdnjs.cloudflare.com/ajax/libs/axios/0.24.0/axios.min.js";
+        import axios from "https://cdn.skypack.dev/axios";
+        import cheerio from "https://cdn.skypack.dev/cheerio";
+
+
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyAVmw2dqyc_W7X4P7eutweuEnl6TvGeP1Q",
+            authDomain: "empowering-4e0ef.firebaseapp.com",
+            databaseURL: "https://empowering-4e0ef-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "empowering-4e0ef",
+            storageBucket: "empowering-4e0ef.appspot.com",
+            messagingSenderId: "824989131570",
+            appId: "1:824989131570:web:be04fc5be51aaddd89ad2b"
+        };
+    
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+    
+        // Get the Auth service for the default app
+        const auth = getAuth();
+    
+        // get realtime database
+        const db = getDatabase(app);
+
+
+        // Get the logout link element
+        const logoutLink = document.getElementById("logout-link");
+    
+        // Add click event listener to the logout link
+        logoutLink.addEventListener("click", function(event) {
+            event.preventDefault(); // Prevent default link behavior
+    
+            // Sign out the current user
+            auth.signOut().then(() => {
+                // Sign-out successful.
+                alert("Logout successful!");
+                // Redirect to login page or any other page after logout
+                window.location.href = "../index.html";
+            }).catch((error) => {
+                // An error happened.
+                alert("Error occurred during logout: " + error.message);
+            });
+        });
+
+
+        // Function to fetch and scrape the website
+        async function getCharge(month, year) {
+            // parse month into number
+            let date = new Date(`${month} 1, ${year}`);
+            let now = new Date();
+            if (now.getMonth() === date.getMonth() && now.getFullYear() === year) {
+                // get the previous month
+                date.setMonth(date.getMonth() - 1);
+            }
+
+            try {
+
+                // Fetch HTML content of the website
+                month = date.toLocaleString('default', { month: 'long' }).toLowerCase();
+                let url = `https://cors-anywhere.herokuapp.com/https://company.meralco.com.ph/news-and-advisories/${month}-${year}-rates-updates${month === 'april' ? '-0' : ''}`;
+                              
+                const response = await axios.get(url);
+                const html = response.data;
+
+                // Load HTML content into Cheerio
+                const $ = cheerio.load(html);
+
+                // Find specific word in the HTML content
+                const firstPInDiv = $('div.node-field.body').text();
+                const findIn = 'overall rate for a typical household';
+
+                // Get the number between the two specific words, use regex
+                const charge = firstPInDiv.substring(firstPInDiv.indexOf(findIn) + findIn.length).split('P')[1].substring(0, 7);
+                
+
+                
+                // Output the specific word
+                console.log('Charge:', charge);
+
+                // convert to float
+                return parseFloat(charge);
+
+
+            } catch (error) {
+                return 10.5;
+            }
+        }
+
+        
+        const dataContainer = document.getElementById("data-container");
+        
+        
+        // on dataContainer change size
+        new ResizeObserver(function () {
+            if (window.chart) window.chart.windowResizeHandler();                        
+            // set all the items inside the datacontainer to have opacity of 0
+            dataContainer.querySelectorAll('*').forEach((item) => {
+                item.style.opacity = 0;
+            });
+        }).observe(dataContainer);
+        
+
+        async function changeView(view) {
+            // change id of the data container
+            const data = ref(db, 'data/monitor');
+
+
+            var kWh = [];
+            var cost = [];
+            var rate = [];
+            var categories = [];
+
+            if (view === "today") {
+                // Add content for today view
+
+                // time epoch
+                // const epoch = 1714227867;
+                // const now = new Date(epoch * 1000);
+                const now = new Date();
+                // set gmt
+                now.setHours(now.getHours());
+                const start = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0).getTime();
+                const end = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59).getTime();
+
+                console.log(now.getTime(), start, end);
+
+                // create dictionary for data
+                let dict = new Map();
+
+                kWh = [];
+                cost = [];
+                categories = [];
+
+                let rate = await getCharge(now.toLocaleString('default', { month: 'long' }).toLowerCase(), now.getFullYear());
+                get(data).then((snapshot) => {
+                    if (snapshot.exists()) {
+                        // filter data for today
+                        snapshot.forEach((childSnapshot) => {
+                            // get time and date based on the epoch
+                            const adjTime = (childSnapshot.key - 14400)*1000;
+                            const currentHour = new Date(adjTime).getHours();
+
+                            
+                            if (adjTime >= start && adjTime <= end) {
+                                // check if the hour is already in the dictionary
+                                if (dict.has(currentHour)) {
+                                    const currentData = dict.get(currentHour);
+                                    dict.set(currentHour, {
+                                        A: currentData.A + childSnapshot.val().A,
+                                        V: currentData.V + childSnapshot.val().V,
+                                        count: currentData.count + 1
+                                    });
+                                } else {
+                                    dict.set(currentHour, {
+                                        A: childSnapshot.val().A,
+                                        V: childSnapshot.val().V,
+                                        count: 1
+                                    });
+                                }
+                            }
+                        });
+
+                        for (let i = 0; i < 24; i++) {
+                            if (!dict.has(i)) {
+                                dict.set(i, {
+                                    A: 0,
+                                    V: 0,
+                                    count: 1
+                                });
+                                kWh.push(0);
+                                cost.push(0);
+                            } else {
+                                const currentData = dict.get(i);
+                                dict.set(i, {
+                                    A: currentData.A / currentData.count,
+                                    V: currentData.V / currentData.count,
+                                    kWh: ((currentData.A / currentData.count)*(currentData.V / currentData.count)) / 1000,
+                                    count: currentData.count
+                                });
+                                kWh.push(dict.get(i).kWh);
+                                cost.push(dict.get(i).kWh * rate);
+                            }
+                        }
+
+                        categories = ['12 AM', '1 AM', '2 AM', '3 AM', '4 AM', '5 AM', '6 AM', '7 AM', '8 AM', '9 AM', '10 AM', '11 AM', '12 PM', '1 PM', '2 PM', '3 PM', '4 PM', '5 PM', '6 PM', '7 PM', '8 PM', '9 PM', '10 PM', '11 PM']
+
+                        
+
+                    } else {
+                        console.log("No data available");
+                    }
+                }).catch((error) => {
+                    console.error(error);
+                }).finally(() => {
+                    // get current date
+                    const currentDate = new Date().toLocaleString('default', { month: 'long', day: 'numeric', year: 'numeric' });
+                    renderGraph(`Electricity Usage and Cost for ${currentDate}`, kWh, cost, categories);
+                });
+               
+
+            } else if (view === "month") {
+                // Add content for month view
+                const now = new Date();
+                const start = new Date(now.getFullYear(), now.getMonth(), 1, 0, 0, 0).getTime();
+                const end = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59).getTime();
+
+                console.log(now.getTime(), start, end);
+
+                // create dictionary for data
+                let dict = new Map();
+
+                kWh = [];
+                cost = [];
+                categories = [];
+
+                let rate = await getCharge(now.toLocaleString('default', { month: 'long' }).toLowerCase(), now.getFullYear());
+                get(data).then((snapshot) => {
+                    if (snapshot.exists()) {
+                        // filter data for today
+                        snapshot.forEach((childSnapshot) => {
+                            // get time and date based on the epoch
+                            const adjTime = (childSnapshot.key - 14400)*1000;
+                            const currentDay = new Date(adjTime).getDate();
+
+                            
+                            if (adjTime >= start && adjTime <= end) {
+                                // check if the hour is already in the dictionary
+                                if (dict.has(currentDay)) {
+                                    const currentData = dict.get(currentDay);
+                                    dict.set(currentDay, {
+                                        A: currentData.A + childSnapshot.val().A,
+                                        V: currentData.V + childSnapshot.val().V,
+                                        count: currentData.count + 1
+                                    });
+                                } else {
+                                    dict.set(currentDay, {
+                                        A: childSnapshot.val().A,
+                                        V: childSnapshot.val().V,
+                                        count: 1
+                                    });
+                                }
+                            }
+                        });
+
+                        for (let i = 1; i <= new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate(); i++) {
+                            if (!dict.has(i)) {
+                                kWh.push(0);
+                                cost.push(0);
+                            } else {
+                                const currentData = dict.get(i);
+                                dict.set(i, {
+                                    A: currentData.A / currentData.count,
+                                    V: currentData.V / currentData.count,
+                                    kWh: ((currentData.A / currentData.count)*(currentData.V / currentData.count)) / 1000,
+                                    count: currentData.count
+                                });
+                                kWh.push(dict.get(i).kWh);
+                                cost.push(dict.get(i).kWh * rate);
+                            }
+                        }
+
+                        for (let i = 1; i <= new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate(); i++) {
+                            categories.push(i);
+                        }
+
+                    } else {
+                        console.log("No data available");
+                    }
+                }).catch((error) => {
+                    console.error(error);
+                }).finally(() => {
+                    // get current month
+                    const currentMonth = new Date().toLocaleString('default', { month: 'long', year: 'numeric'});
+                    renderGraph(`Electricity Usage and Cost for ${currentMonth}`, kWh, cost, categories);
+                });
+                
+
+            } else if (view === "year") {
+                // Add content for year view
+                const now = new Date();
+                const start = new Date(now.getFullYear(), 0, 1, 0, 0, 0).getTime();
+                const end = new Date(now.getFullYear(), 11, 31, 23, 59, 59).getTime();
+
+                console.log(now.getTime(), start, end);
+
+                // create dictionary for data
+                let dict = new Map();
+
+                kWh = [];
+                cost = [];
+                rate = [];
+                categories = [];
+
+                await get(data).then(async(snapshot) => {
+                    if (snapshot.exists()) {
+                        // filter data for today
+                        snapshot.forEach((childSnapshot) => {
+                            // get time and date based on the epoch
+                            const adjTime = (childSnapshot.key - 14400)*1000;
+                            const currentMonth = new Date(adjTime).getMonth();
+
+                            
+                            if (adjTime >= start && adjTime <= end) {
+                                // check if the hour is already in the dictionary
+                                if (dict.has(currentMonth)) {
+                                    const currentData = dict.get(currentMonth);
+                                    dict.set(currentMonth, {
+                                        A: currentData.A + childSnapshot.val().A,
+                                        V: currentData.V + childSnapshot.val().V,
+                                        count: currentData.count + 1
+                                    });
+                                } else {
+                                    dict.set(currentMonth, {
+                                        A: childSnapshot.val().A,
+                                        V: childSnapshot.val().V,
+                                        count: 1
+                                    });
+                                }
+                            }
+                        });
+
+                        for (let i = 0; i < 12; i++) {
+                            if (!dict.has(i)) {
+                                kWh.push(0);
+                                cost.push(0);
+                                rate.push(0);
+                            } else {
+                                const currentData = dict.get(i);
+                                dict.set(i, {
+                                    A: currentData.A / currentData.count,
+                                    V: currentData.V / currentData.count,
+                                    kWh: ((currentData.A / currentData.count)*(currentData.V / currentData.count)) / 1000,
+                                    count: currentData.count
+                                });
+                                kWh.push(dict.get(i).kWh);
+                                var rt = await getCharge(new Date(0, i).toLocaleString('default', { month: 'long' }).toLowerCase(), now.getFullYear());
+                                rate.push(rt);
+                                cost.push(dict.get(i).kWh * rt);
+                            }
+                        }
+
+                        for (let i = 0; i < 12; i++) {
+                            categories.push(new Date(0, i).toLocaleString('default', { month: 'long' }));
+                        }
+
+                    } else {
+                        console.log("No data available");
+                    }
+                }).catch((error) => {
+                    console.error(error);
+                }).finally(() => {
+                    // get current year
+                    const currentYear = new Date().getFullYear();
+                    renderGraphRate(`Electricity Usage and Cost for ${currentYear}`, kWh, cost, rate, categories);
+                });
+
+            }
+
+        }
+        changeView('today');
+
+        function renderGraphRate(title, kWh, cost, rate, categories) {
+                // if (window.chart) {
+                //     window.chart.destroy();
+                // }
+                dataContainer.innerHTML = "";
+
+              
+
+                var options = {
+                    title: {
+                        text: title,
+                        align: 'center',
+                        margin: 30,
+                        offsetY: 10,
+                        style: {
+                            fontSize: '20px'
+                        }
+                    },
+                    series: [{
+                        name: 'Electricity Usage (kWh)',
+                        data: kWh
+                    }, {
+                        name: 'Total Cost (₱)',
+                        data: cost
+                    },
+                    {
+                        name: 'Rate (₱)',
+                        data: rate
+                    }],
+                    chart: {
+                        type: 'bar',
+                        height: 800,
+                        width: '100%'
+                    },
+                    plotOptions: {
+                        bar: {
+                            horizontal: false,
+                            columnWidth: '55%',
+                            endingShape: 'rounded'
+                        },
+                    },
+                    dataLabels: {
+                        enabled: false
+                    },
+                    stroke: {
+                        show: true,
+                        width: 2,
+                        colors: ['transparent']
+                    },
+                    xaxis: {
+                        categories: categories,
+                    },
+                    yaxis: [{
+                        labels: {
+                            formatter: function (val) {
+                                return val + " kWh"; // Format electricity usage y-axis
+                            }
+                        },
+                        title: {
+                            text: 'Electricity Usage (kWh)'
+                        }
+                    }, {
+                        labels: {
+                            formatter: function (val) {
+                                return "₱ " + val; // Format total cost y-axis with pesos
+                            }
+                        },
+                        opposite: true,
+                        title: {
+                            text: 'Total Cost (₱)'
+                        }
+                    }, {
+                        labels: {
+                            formatter: function (val) {
+                                return "₱ " + val; // Format total cost y-axis with pesos
+                            }
+                        },
+                        opposite: true,
+                        title: {
+                            text: 'Rate (₱)'
+                        }
+                    }],
+                    fill: {
+                        opacity: 1
+                    },
+                    tooltip: {
+                        y: [{
+                            formatter: function (val) {
+                                return val + " kWh"; // Format electricity usage tooltip
+                            }
+                        }, {
+                            formatter: function (val) {
+                                return "₱ " + val; // Format total cost tooltip with pesos
+                            }
+                        }, {
+                            formatter: function (val) {
+                                return "₱ " + val; // Format total cost tooltip with pesos
+                            }
+                        }]
+                    }
+
+                };
+
+                window.chart = new ApexCharts(dataContainer, options);
+                window.chart.render();
+
+            }
+
+        function renderGraph(title, kWh, cost, categories){
+            // if (window.chart) {
+            //     window.chart.destroy();
+            // }
+            dataContainer.innerHTML = "";
+
+            var options = {
+                title: {
+                    text: title,
+                    align: 'center',
+                    margin: 30,
+                    offsetY: 10,
+                    style: {
+                        fontSize: '20px'
+                    }
+                },
+                series: [{
+                    name: 'Electricity Usage (kWh)',
+                    data: kWh
+                }, {
+                    name: 'Total Cost (₱)',
+                    data: cost
+                }],
+                chart: {
+                    type: 'bar',
+                    height: 800,
+                    width: '100%'
+                },
+                plotOptions: {
+                    bar: {
+                        horizontal: false,
+                        columnWidth: '55%',
+                        endingShape: 'rounded'
+                    },
+                },
+                dataLabels: {
+                    enabled: false
+                },
+                stroke: {
+                    show: true,
+                    width: 2,
+                    colors: ['transparent']
+                },
+                xaxis: {
+                    categories: categories,
+                },
+                yaxis: [{
+                    labels:{
+                        formatter: function (val) {
+                            return val + " kWh"; // Format electricity usage y-axis
+                        }
+                    },
+                    title: {
+                        text: 'Electricity Usage (kWh)'
+                    }
+                }, {
+                    labels:{
+                        formatter: function (val) {
+                            return "₱ " + val; // Format total cost y-axis with pesos
+                        }
+                    },
+                    opposite: true,
+                    title: {
+                        text: 'Total Cost (₱)'
+                    }
+                }],
+                fill: {
+                    opacity: 1
+                },
+                tooltip: {
+                    y: [{
+                        formatter: function (val) {
+                            return val + " kWh"; // Format electricity usage tooltip
+                        }
+                    }, {
+                        formatter: function (val) {
+                            return "₱ " + val; // Format total cost tooltip with pesos
+                        }
+                    }]
+                }
+            };
+
+            window.chart = new ApexCharts(dataContainer, options);
+            window.chart.render();
+
+        }
+
+        const todayButton = document.getElementById("today-button");
+        const monthButton = document.getElementById("month-button");
+        const yearButton = document.getElementById("year-button");
+
+        todayButton.addEventListener("click", function() {
+            changeView('today');
+            todayButton.classList.add("selected");
+
+            monthButton.classList.remove("selected");
+            yearButton.classList.remove("selected");
+        });
+
+        monthButton.addEventListener("click", function() {
+            changeView('month');
+            monthButton.classList.add("selected");
+
+            todayButton.classList.remove("selected");
+            yearButton.classList.remove("selected");
+        });
+
+        yearButton.addEventListener("click", function() {
+            changeView('year');
+            yearButton.classList.add("selected");
+
+            todayButton.classList.remove("selected");
+            monthButton.classList.remove("selected");
+        });
+
+    </script>
+</body>
+
+</html>

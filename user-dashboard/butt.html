@@ -1,0 +1,36 @@
+<!-- index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bluetooth Data</title>
+</head>
+<body>
+    <h1>Bluetooth Data</h1>
+    <div id="data"></div>
+    <button id="connectBtn">Connect</button>
+    <button id="disconnectBtn" disabled>Disconnect</button>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        var socket = io();
+
+        socket.on('data', function(data) {
+            document.getElementById('data').innerText = 'Data from HC-05: ' + data;
+        });
+
+        document.getElementById('connectBtn').addEventListener('click', function() {
+            socket.emit('connectBluetooth');
+            document.getElementById('connectBtn').disabled = true;
+            document.getElementById('disconnectBtn').disabled = false;
+        });
+
+        document.getElementById('disconnectBtn').addEventListener('click', function() {
+            socket.emit('disconnectBluetooth');
+            document.getElementById('connectBtn').disabled = false;
+            document.getElementById('disconnectBtn').disabled = true;
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Web Bluetooth Example</title>
+</head>
+<body>
+    <div>
+        <button onclick="connectToDevice()">Connect to Bluetooth Device</button>
+        <span id="status">Status: Disconnected</span>
+    </div>
+    <div>
+        <textarea id="terminal" cols="40" rows="10" readonly></textarea>
+    </div>
+
+    <script>
+        let terminal = document.getElementById('terminal');
+        let statusElement = document.getElementById('status');
+
+        async function connectToDevice() {
+            try {
+                // Request Bluetooth device
+                console.log('Requesting Bluetooth device...');
+                const device = await navigator.bluetooth.requestDevice({
+                    filters: [{ name: 'HC-05' }],
+                    optionalServices: ['00001101-0000-1000-8000-00805F9B34FB'] // UUID of your Bluetooth service
+                });
+                console.log('Bluetooth device selected:', device);
+
+                // Update status
+                statusElement.textContent = 'Status: Connecting...';
+
+                // Connect to the selected device
+                console.log('Connecting to Bluetooth device...');
+                const server = await device.gatt.connect();
+                console.log('Connected to Bluetooth device:', server);
+
+                // Update status
+                statusElement.textContent = 'Status: Connected';
+
+                // Get the primary service
+                const service = await server.getPrimaryService('00001101-0000-1000-8000-00805F9B34FB'); // UUID of your Bluetooth service
+                console.log('Primary service:', service);
+
+                // Get a characteristic of the service
+                const characteristic = await service.getCharacteristic('00001101-0000-1000-8000-00805F9B34FB'); // UUID of your characteristic
+                console.log('Characteristic:', characteristic);
+
+                // Set up event listener for receiving data
+                characteristic.addEventListener('characteristicvaluechanged', handleData);
+
+                // Start notifications for the characteristic
+                await characteristic.startNotifications();
+
+            } catch (error) {
+                console.error('Bluetooth error:', error);
+                // Update status
+                statusElement.textContent = 'Status: Disconnected';
+            }
+        }
+
+        function handleData(event) {
+            let value = event.target.value;
+            let data = new TextDecoder().decode(value);
+            terminal.value += data + '\n';
+            terminal.scrollTop = terminal.scrollHeight;
+        }
+    </script>
+</body>
+</html>
