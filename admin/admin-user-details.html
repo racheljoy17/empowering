@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <!-- Add your favorite charting library (e.g., Chart.js) and CSS framework (e.g., Bootstrap) here -->
+    <!-- For simplicity, I'm using CDN links for Chart.js and Bootstrap -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <!-- Add Font Awesome CDN for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+        integrity="sha512-fmPv08t9auC4Llm1LFOkAq7z4Y0IdP98h66sy2B4OG+eW+X8z5HTt3p8zY+mgk6r6Uc3lWYSrtBX4ptTG9DCQ=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!-- Font Awesome icons (free version)-->
+    <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
+    <!-- Google fonts-->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@400;100;300;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: whitesmoke;
+            color: black;
+            margin: 0;
+        }
+        .container-fluid {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        #header {
+            background-color: darkgoldenrod;
+            padding: 15px;
+            text-align: center;
+        }
+        #header h2 {
+            margin: 0;
+            font-weight: 700;
+            color: bisque;
+        }
+        .content-container {
+            display: flex;
+            flex: 1;
+        }
+        #sidebar {
+            min-width: 200px;
+            max-width: 200px;
+            background-color: rgb(221, 173, 52);
+            padding-top: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+        #content {
+            flex: 1;
+            padding: 30px;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+        }
+        .sidebar-item {
+            padding: 8px;
+            text-decoration: none;
+            color: white;
+            display: block;
+            cursor: pointer;
+            font-size: 19px;
+        }
+        .sidebar-item:hover {
+            background-color: darkkhaki;
+        }
+        .chart-container {
+            margin: 20px;
+            background-color: wheat;
+            padding: 10px;
+            border-radius: 8px;
+            width: 50%; /* Set width to 100% for responsiveness */
+            justify-content: center;
+        }
+
+        /* Media Query for smaller screens */
+        @media screen and (max-width: 768px) {
+            #sidebar {
+                min-width: 150px;
+                max-width: 150px;
+            }
+            #content {
+                flex-direction: column;
+            }
+            .chart-container {
+                width: 100%;
+                margin-bottom: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container-fluid">
+    <!-- Header -->
+    <div id="header">
+        <h2>ENERGY DASHBOARD</h2>
+    </div>
+
+    <!-- Content Container -->
+    <div class="content-container">
+        <!-- Sidebar -->
+        <div id="sidebar">
+            <div class="sidebar-item" >Welcome Admin</div>
+            <div class="sidebar-item text-muted">Users</a></div>
+            <div class="sidebar-item" >Edit Pricing</div>
+            <div class="sidebar-item" >Logout</div>
+        </div>
+
+        <!-- Page Content -->
+        <div id="content">
+            <!-- Chart for Current Prices kilowatt/hr -->
+            <div class="chart-container">
+                <canvas id="currentPricesChart" width="100" height="50"></canvas>
+            </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
